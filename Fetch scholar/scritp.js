@@ -13,23 +13,29 @@ sortBtn.addEventListener("change", () => {
     sortProducts();
 })
 
-const sortProducts = () => {
-
-    let sortOption = sortBtn.value;
-    let priceArr = [];
-    let sortedData;
-    console.log(sortOption);
-    fetch(url)
-        .then((res) => res.json())
-        .then((data) => {
-            if (sortOption === "low-high") {
-                sortedData = data.filter((ele) => {
-                    console.log(ele.price);
-                    priceArr.push(ele.price);
-                })
+function sortProducts() {
+    productInfo.innerHTML = "";
+    // Fetch products from the API
+    let sortValue = sortBtn.value;
+    fetch('https://fakestoreapi.com/products')
+        .then(response => response.json())
+        .then(data => {
+            // Sort products by price in ascending order
+            if (sortValue === "low-high") {
+                const sortedLowToHigh = data.sort((a, b) => a.price - b.price);
+                console.log('Sorted by price low to high:', sortedLowToHigh);
+                showProducts(sortedLowToHigh);
             }
-        }).catch(() => {
-            alert("An error occurred while fetching the products!");
+            // Sort products by price in descending order
+            else {
+                const sortedHighToLow = data.sort((a, b) => b.price - a.price);
+                console.log('Sorted by price high to low:', sortedHighToLow);
+                showProducts(sortedHighToLow);
+            }
+        })
+
+        .catch(error => {
+            console.error('Error fetching products:', error);
         });
 }
 
